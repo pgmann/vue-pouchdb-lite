@@ -127,7 +127,8 @@ Using an options
           selector: {type: "person"},
           sort: [{name: "asc"}],
           limit: this.resultsPerPage,
-          skip: this.resultsPerPage * (this.currentPage - 1)
+          skip: this.resultsPerPage * (this.currentPage - 1),
+          disabled: false
         }
       },
 

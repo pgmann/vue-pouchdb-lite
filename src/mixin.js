@@ -65,7 +65,17 @@ export default {
 
       this.$watch(
         pouchFn,
-        ({ database, first, fields, sort, limit, skip, selector = {}, ...options }) => {
+        ({ database, first, fields, sort, limit, skip, disabled, selector = {}, ...options }) => {
+          // reset the liveFeed
+          if (this._liveFeeds[key]) this._liveFeeds[key].cancel()
+          let aggregateCache = []
+
+          // stop here if currently disabled
+          if(disabled) {
+            console.debug(key, "pouch query is disabled");
+            return;
+          }
+
           // merge both syntaxes.
           selector = {...options, ...selector};
           let db = this.$pouch.getDB(database || key);
@@ -77,10 +87,6 @@ export default {
             })
             return
           }
-
-          // reset the liveFeed
-          if (this._liveFeeds[key]) this._liveFeeds[key].cancel()
-          let aggregateCache = []
 
           // the LiveFind plugin returns a liveFeed object
           this._liveFeeds[key] = db
