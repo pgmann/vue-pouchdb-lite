@@ -73,6 +73,7 @@ export default {
           // stop here if currently disabled
           if(disabled) {
             console.debug(key, "pouch query is disabled");
+            this.$data[key] = aggregateCache = first ? null : [];
             return;
           }
 
@@ -99,11 +100,11 @@ export default {
               aggregate: true
             })
             .on('update', (_, aggregate) => {
-              if (first && aggregate) { aggregate = aggregate[0] }
+              if (first) { aggregate = aggregate ? aggregate[0] : null }
               this.$data[key] = aggregateCache = aggregate
             })
             .on('ready', () => {
-              this.$data[key] = aggregateCache
+              this.$data[key] = Array.isArray(aggregateCache) && !aggregateCache.length && first ? null : aggregateCache;
             })
             .on('error', console.error);
             
